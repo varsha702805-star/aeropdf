@@ -16,7 +16,7 @@
   
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-muted: #8ba2bd;
   
   --accent-color: #10b981; /* Emerald Green */
   --accent-glow: rgba(16, 185, 129, 0.35);
@@ -51,7 +51,7 @@ body.light-theme {
   
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #64748b;
+  --text-muted: #475569;
   
   --accent-color: #059669; /* Slightly darker Emerald for readability */
   --accent-glow: rgba(5, 150, 105, 0.2);
