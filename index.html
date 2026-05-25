@@ -404,7 +404,10 @@
     <!-- --- Footer --- -->
     <footer>
       <p>&copy; 2026 AeroPDF. Engineered for ultimate security. AdSense ready.</p>
-      <div style="margin-top: 0.5rem; display: flex; justify-content: center; gap: 1rem;">
+      <div class="footer-links" style="margin-top: 0.75rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+        <a href="#about" id="aboutLink" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none; transition: color var(--transition-fast);">About Us</a>
+        <a href="#privacy" id="privacyLink" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none; transition: color var(--transition-fast);">Privacy Policy</a>
+        <a href="#contact" id="contactLink" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none; transition: color var(--transition-fast);">Contact Us</a>
         <a href="sitemap.xml" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none;" target="_blank">Sitemap</a>
       </div>
     </footer>
@@ -484,6 +487,64 @@
 
   <!-- --- Toast Notification Container --- -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- --- About Us Modal --- -->
+  <div class="modal-overlay" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutModalTitle">
+    <div class="modal-content modal-large">
+      <button class="modal-close-btn" id="closeAboutModalBtn" aria-label="Close modal">&times;</button>
+      <h3 id="aboutModalTitle"><i data-lucide="info" style="color: var(--accent-color); margin-right: 0.5rem; vertical-align: middle;"></i>About AeroPDF</h3>
+      <div class="modal-body-content">
+        <p>Welcome to <strong>AeroPDF</strong>, your professional, local-first utility for fast and completely private document operations.</p>
+        <p>Unlike traditional PDF editors that force you to upload private forms, records, and files to cloud databases (posing immense security risks), our proprietary engine runs <strong>100% inside your browser sandbox</strong>. Everything happens locally on your computer or phone using HTML5 APIs, ensuring maximum processing speed, offline capability, and total document integrity.</p>
+        <p><strong>Our Mission:</strong> To provide top-tier, enterprise-grade utility tools that are free, anonymous, secure, and accessible to everyone without subscriptions or account logins.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- Privacy Policy Modal --- -->
+  <div class="modal-overlay" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="privacyModalTitle">
+    <div class="modal-content modal-large">
+      <button class="modal-close-btn" id="closePrivacyModalBtn" aria-label="Close modal">&times;</button>
+      <h3 id="privacyModalTitle"><i data-lucide="shield" style="color: var(--accent-color); margin-right: 0.5rem; vertical-align: middle;"></i>Privacy Policy</h3>
+      <div class="modal-body-content">
+        <p><em>Last Updated: May 26, 2026</em></p>
+        <h4>1. 100% Client-Side Processing</h4>
+        <p>At AeroPDF, we value your privacy above all else. Your documents, photos, and files are **never uploaded, stored, or sent to any external server**. All file operations, canvas compressions, and PDF renderings happen locally in your web browser. No copy of your files exists anywhere outside your physical device.</p>
+        
+        <h4>2. Data Purging & Retention</h4>
+        <p>Since all operations run in temporary browser memory (RAM), your file handles are immediately purged from active memory when you click "Convert Another File," "Clear All," or close your browser tab. We do not maintain any logs or server histories.</p>
+        
+        <h4>3. AdSense and Third-Party Cookies</h4>
+        <p>We use Google AdSense to serve advertisements on our platform. These third-party vendors use cookies to serve ads based on your visits to our site and other pages on the internet. You can manage your personalized ad settings via Google's Ad Settings dashboard.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- Contact Us Modal --- -->
+  <div class="modal-overlay" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+    <div class="modal-content modal-medium">
+      <button class="modal-close-btn" id="closeContactModalBtn" aria-label="Close modal">&times;</button>
+      <h3 id="contactModalTitle"><i data-lucide="mail" style="color: var(--accent-color); margin-right: 0.5rem; vertical-align: middle;"></i>Contact Us</h3>
+      <div class="modal-body-content">
+        <p style="margin-bottom: 1.5rem;">Have any questions or feedback? Send us a message and our team will get back to you within 24 hours.</p>
+        <form class="contact-form" id="contactForm" name="contact" data-netlify="true" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label for="contactName" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary);">Your Name</label>
+            <input type="text" id="contactName" required placeholder="John Doe" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; color: var(--text-primary); font-family: inherit; font-size: 0.9rem; transition: border var(--transition-fast);">
+          </div>
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label for="contactEmail" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary);">Email Address</label>
+            <input type="email" id="contactEmail" required placeholder="john@example.com" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; color: var(--text-primary); font-family: inherit; font-size: 0.9rem; transition: border var(--transition-fast);">
+          </div>
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label for="contactMessage" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary);">Message</label>
+            <textarea id="contactMessage" required placeholder="Tell us how we can help..." rows="4" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; color: var(--text-primary); font-family: inherit; font-size: 0.9rem; resize: vertical; transition: border var(--transition-fast);"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; justify-content: center; height: 3rem;">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- --- Hidden File Inputs (Placed at the very bottom outside layout containers to prevent bubbling conflicts) --- -->
   <input type="file" id="fileInput" class="file-input" accept="image/jpeg, image/jpg, image/png, image/webp" multiple aria-label="Upload Images">

@@ -985,4 +985,94 @@ document.addEventListener('DOMContentLoaded', () => {
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+  // --- Compliance Modals Controller Hooks ---
+  const aboutLink = document.getElementById('aboutLink');
+  const privacyLink = document.getElementById('privacyLink');
+  const contactLink = document.getElementById('contactLink');
+
+  const aboutModal = document.getElementById('aboutModal');
+  const privacyModal = document.getElementById('privacyModal');
+  const contactModal = document.getElementById('contactModal');
+
+  const closeAboutModalBtn = document.getElementById('closeAboutModalBtn');
+  const closePrivacyModalBtn = document.getElementById('closePrivacyModalBtn');
+  const closeContactModalBtn = document.getElementById('closeContactModalBtn');
+  
+  const contactForm = document.getElementById('contactForm');
+
+  // Open Handlers
+  aboutLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    aboutModal.style.display = 'flex';
+    aboutModal.focus();
+  });
+
+  privacyLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    privacyModal.style.display = 'flex';
+    privacyModal.focus();
+  });
+
+  contactLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    contactModal.style.display = 'flex';
+    contactModal.focus();
+  });
+
+  // Close Handlers
+  closeAboutModalBtn.addEventListener('click', () => aboutModal.style.display = 'none');
+  closePrivacyModalBtn.addEventListener('click', () => privacyModal.style.display = 'none');
+  closeContactModalBtn.addEventListener('click', () => {
+    contactModal.style.display = 'none';
+    contactForm.reset();
+  });
+
+  // Click Outside to Close Modals
+  window.addEventListener('click', (e) => {
+    if (e.target === aboutModal) aboutModal.style.display = 'none';
+    if (e.target === privacyModal) privacyModal.style.display = 'none';
+    if (e.target === contactModal) {
+      contactModal.style.display = 'none';
+      contactForm.reset();
+    }
+  });
+
+  // Contact Form Submission Handler
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('contactName').value;
+    const email = document.getElementById('contactEmail').value;
+    const message = document.getElementById('contactMessage').value;
+    
+    // Attempt silent AJAX background post to Netlify Forms
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        "form-name": "contact",
+        "name": name,
+        "email": email,
+        "message": message
+      }).toString()
+    })
+    .then((res) => {
+      if (!res.ok) throw new Error("Netlify AJAX request unsuccessful.");
+      showToast('Message sent successfully! We will contact you soon.');
+      contactModal.style.display = 'none';
+      contactForm.reset();
+    })
+    .catch((error) => {
+      console.warn("AJAX submit failed, falling back to mailto client...", error);
+      
+      // Fallback: Launch pre-filled native mail client directly targeting your email address
+      const mailtoUrl = `mailto:v937506@gmail.com?subject=AeroPDF%20Support/Complaint%20Request&body=Name:%20${encodeURIComponent(name)}%0AEmail:%20${encodeURIComponent(email)}%0A%0AComplaint/Feedback:%0A${encodeURIComponent(message)}`;
+      window.location.href = mailtoUrl;
+      
+      showToast('Opening default mail client...');
+      contactModal.style.display = 'none';
+      contactForm.reset();
+    });
+  });
 });
