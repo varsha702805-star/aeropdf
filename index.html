@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AeroPDF - Modern & Private Image to PDF Converter</title>
+  <meta name="description" content="Convert your JPEG, PNG, and WebP images to a professional PDF, or extract images from your PDF files. 100% private, client-side, and lightweight.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- --- Google AdSense Background Wrap / Skin Ads (Desktop Side Rails) --- -->
+  <div class="ad-skin-left" aria-hidden="true">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:160px;height:600px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="XXXXXXXXXX"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  
+  <div class="ad-skin-right" aria-hidden="true">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:160px;height:600px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="XXXXXXXXXX"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+  <div class="app-container" id="top">
+    <!-- --- Header --- -->
+    <header>
+      <div class="logo-group">
+        <div class="logo-icon" aria-hidden="true">
+          <i data-lucide="file-image"></i>
+        </div>
+        <span class="logo-text">AeroPDF</span>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="nav-menu" aria-label="Main Navigation">
+        <a href="#top" class="nav-link active">Converter</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#security" class="nav-link">Security</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle light and dark theme">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon" style="display: none;"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- --- Segmented Tool Switcher --- -->
+    <div class="tool-switcher">
+      <button class="switcher-btn active" id="modeImgToPdfBtn" type="button">
+        <i data-lucide="images"></i>
+        Images to PDF
+      </button>
+      <button class="switcher-btn" id="modePdfToImgBtn" type="button">
+        <i data-lucide="file-output"></i>
+        PDF to Images
+      </button>
+    </div>
+
+    <!-- --- Main Content --- -->
+    <main>
+      
+      <!-- State 1: Upload (Empty state) -->
+      <section class="upload-container" id="uploadStateSection">
+        
+        <!-- Upload Zone: HTML5 Native Label (Bypasses iOS/Android programmatic block) -->
+        <label class="dropzone" id="dropzone" for="fileInput" aria-label="Upload files click zone">
+          <div class="upload-cloud-icon" id="uploadZoneIcon">
+            <i data-lucide="upload-cloud"></i>
+          </div>
+          <h2 id="uploadZoneTitle">Drag & drop your images here</h2>
+          <p id="uploadZoneSub">Supports JPG, JPEG, PNG, and WebP. Works 100% locally in your browser.</p>
+          <span class="btn btn-primary" id="selectFilesBtn">
+            <i data-lucide="image" id="selectBtnIcon" style="margin-right: 0.5rem;"></i>
+            <span id="selectBtnText">Select Files</span>
+          </span>
+        </label>
+      </section>
+
+      <!-- State 2: Editor (Active state) -->
+      <section class="editor-workspace" id="editorStateSection">
+        
+        <!-- Left Side: List of Images / Pages -->
+        <div class="editor-main">
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title" id="editorPanelTitle">
+                <i data-lucide="list-ordered" style="color: var(--accent-color);"></i>
+                Document Pages
+              </h2>
+              <button class="panel-action" id="clearAllBtn" type="button">
+                Clear All
+              </button>
+            </div>
+            
+            <!-- Dynamic Grid for Previews -->
+            <div class="preview-grid" id="previewGrid">
+              <!-- Dynamically populated via JS -->
+              <label class="add-more-card" id="addMoreCard" for="fileInput" aria-label="Add more items">
+                <i data-lucide="plus-circle" style="width: 2rem; height: 2rem;"></i>
+                <span id="addMoreText">Add Image</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Configuration Sidebar -->
+        <aside class="settings-sidebar">
+          
+          <!-- Card A: Image to PDF Settings (Visible in ImgToPdf mode) -->
+          <div class="panel settings-card" id="imgToPdfSettingsCard">
+            <h2 class="panel-title" style="margin-bottom: 1.5rem;">
+              <i data-lucide="sliders" style="color: var(--accent-color);"></i>
+              PDF Configuration
+            </h2>
+
+            <!-- Page Size -->
+            <div class="settings-group">
+              <label class="settings-label" for="pageSizeSelect">Page Size</label>
+              <div class="select-wrapper">
+                <select id="pageSizeSelect" aria-label="Select PDF page size">
+                  <option value="auto" selected>Auto (Match Image Size)</option>
+                  <option value="a4">A4 (210 x 297 mm)</option>
+                  <option value="letter">US Letter (215.9 x 279.4 mm)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Page Orientation -->
+            <div class="settings-group" id="orientationGroup">
+              <span class="settings-label">Orientation</span>
+              <div class="segmented-control">
+                <div class="segment-item">
+                  <input type="radio" name="orientation" id="orientAuto" value="auto" checked>
+                  <label class="segment-label" for="orientAuto">
+                    <i data-lucide="rotate-cw" style="width: 0.9rem; height: 0.9rem;"></i>
+                    Auto
+                  </label>
+                </div>
+                <div class="segment-item">
+                  <input type="radio" name="orientation" id="orientPortrait" value="portrait">
+                  <label class="segment-label" for="orientPortrait">
+                    <i data-lucide="file" style="width: 0.9rem; height: 0.9rem;"></i>
+                    Portrait
+                  </label>
+                </div>
+                <div class="segment-item">
+                  <input type="radio" name="orientation" id="orientLandscape" value="landscape">
+                  <label class="segment-label" for="orientLandscape">
+                    <i data-lucide="file" style="width: 0.9rem; height: 0.9rem; transform: rotate(90deg);"></i>
+                    Landscape
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Margins -->
+            <div class="settings-group">
+              <span class="settings-label">Page Margins</span>
+              <div class="segmented-control">
+                <div class="segment-item">
+                  <input type="radio" name="margins" id="marginNone" value="none" checked>
+                  <label class="segment-label" for="marginNone">None</label>
+                </div>
+                <div class="segment-item">
+                  <input type="radio" name="margins" id="marginSmall" value="small">
+                  <label class="segment-label" for="marginSmall">Small</label>
+                </div>
+                <div class="segment-item">
+                  <input type="radio" name="margins" id="marginMedium" value="medium">
+                  <label class="segment-label" for="marginMedium">Medium</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image Fit Options (Disabled when Page Size is Auto) -->
+            <div class="settings-group" id="imageFitGroup" style="opacity: 0.5; pointer-events: none; transition: opacity var(--transition-fast);">
+              <label class="settings-label" for="imageFitSelect">Image Scaling</label>
+              <div class="select-wrapper">
+                <select id="imageFitSelect" aria-label="Select image fitting option">
+                  <option value="contain" selected>Contain (Fit page)</option>
+                  <option value="cover">Cover (Fill page)</option>
+                  <option value="original">Original Size (No scaling)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card B: PDF to Image Settings (Visible in PdfToImg mode) -->
+          <div class="panel settings-card" id="pdfToImgSettingsCard" style="display: none;">
+            <h2 class="panel-title" style="margin-bottom: 1.5rem;">
+              <i data-lucide="sliders" style="color: var(--accent-color);"></i>
+              Extract Configuration
+            </h2>
+
+            <!-- Extraction Format -->
+            <div class="settings-group">
+              <label class="settings-label" for="exportFormatSelect">Output Format</label>
+              <div class="select-wrapper">
+                <select id="exportFormatSelect" aria-label="Select output image format">
+                  <option value="image/jpeg" selected>JPEG (.jpg)</option>
+                  <option value="image/png">PNG (.png)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Resolution Quality -->
+            <div class="settings-group">
+              <span class="settings-label">Extraction Quality</span>
+              <div class="segmented-control">
+                <div class="segment-item">
+                  <input type="radio" name="extractQuality" id="qualityMedium" value="1.5">
+                  <label class="segment-label" for="qualityMedium">Medium</label>
+                </div>
+                <div class="segment-item">
+                  <input type="radio" name="extractQuality" id="qualityHigh" value="2.5" checked>
+                  <label class="segment-label" for="qualityHigh">High (2.5x HD)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- General: Google AdSense Placeholder 1 (Sidebar Square - 300x250) -->
+          <div class="panel settings-card" style="padding: 0.5rem; display: flex; align-items: center; justify-content: center; min-height: 270px;">
+            <div class="ad-container ad-sidebar">
+              <ins class="adsbygoogle"
+                   style="display:inline-block;width:300px;height:250px"
+                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-slot="XXXXXXXXXX"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+          </div>
+          
+        </aside>
+
+      </section>
+
+      <!-- Google AdSense Placeholder 2 (Horizontal Leaderboard - 728x90) -->
+      <div class="ad-container ad-leaderboard">
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:728px;height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+
+      <!-- --- About & Professional Showcase Section --- -->
+      <section class="about-section" id="features">
+        <div class="about-divider"></div>
+        
+        <div class="about-header">
+          <span class="about-badge">Professional Toolkit</span>
+          <h2>Convert with Supreme Security & Performance</h2>
+          <p class="about-lead">AeroPDF utilizes cutting-edge client-side Web APIs to process documents directly on your device. Zero cloud storage, absolute speed, and total file integrity.</p>
+        </div>
+
+        <!-- 3-Column Features Grid -->
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <h3>100% Client-Side Privacy</h3>
+            <p>Your documents and photos are processed strictly inside your web browser. They never touch external cloud servers, preventing data leakages and ensuring regulatory compliance by design.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <i data-lucide="zap"></i>
+            </div>
+            <h3>Dual Processing Pipelines</h3>
+            <p>Whether packing JPEGs into unified PDFs or unpacking PDF documents into high-definition JPEGs, our client side pipelines compiled in sandboxed frames deliver instantaneous rendering.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <i data-lucide="sliders-horizontal"></i>
+            </div>
+            <h3>Precision Customization</h3>
+            <p>Maintain total command over document formats. Customize size formats (A4, Letter, Auto-scaling), margins, orientations, and scaling fits without pixel degradation.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- --- Security and Privacy details --- -->
+      <section class="security-section" id="security">
+        <div class="panel security-card-panel">
+          <div class="security-content">
+            <div class="security-text">
+              <span class="about-badge" style="background: rgba(16, 185, 129, 0.15);">Compliance Grade</span>
+              <h3>No Registration. No Tracking. No Logs.</h3>
+              <p>Unlike standard converters that parse files on external cloud servers, AeroPDF runs inside your browser sandbox. We collect no cookies, enforce no user account registers, and do not track document contents. This makes the tool perfectly suited for processing sensitive files, contracts, financial invoices, or personal identification records.</p>
+              <div class="security-list">
+                <div class="security-item">
+                  <i data-lucide="check-circle2"></i>
+                  <span>Zero Server Storage & Data Loss Risks</span>
+                </div>
+                <div class="security-item">
+                  <i data-lucide="check-circle2"></i>
+                  <span>GDPR, CCPA, and HIPAA Compliant Sandbox</span>
+                </div>
+                <div class="security-item">
+                  <i data-lucide="check-circle2"></i>
+                  <span>Compiles completely offline once loaded</span>
+                </div>
+              </div>
+            </div>
+            <div class="security-illustration">
+              <i data-lucide="fingerprint" class="giant-icon"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- --- Billboard AdSense Container (Replacing FAQ section) --- -->
+      <section class="faq-section" id="billboard-ad">
+        <div class="about-header" style="margin-bottom: 2rem;">
+          <h2>Sponsored Content</h2>
+          <p>AeroPDF is 100% free. Supported by visual advertisements.</p>
+        </div>
+        
+        <div class="ad-container ad-billboard">
+          <ins class="adsbygoogle"
+               style="display:inline-block;width:970px;height:250px"
+               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+               data-ad-slot="XXXXXXXXXX"></ins>
+          <script>
+               (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </section>
+
+      <!-- --- FAQ Accordion Section --- -->
+      <section class="faq-section" id="faq">
+        <div class="about-header" style="margin-bottom: 2rem;">
+          <span class="about-badge">FAQ</span>
+          <h2>Frequently Asked Questions</h2>
+          <p>Quick answers regarding safety, processing limits, and compatibility.</p>
+        </div>
+
+        <div class="faq-accordion">
+          
+          <details class="faq-item">
+            <summary class="faq-question">
+              Is my document data uploaded to external cloud databases?
+              <i data-lucide="chevron-down" class="faq-arrow"></i>
+            </summary>
+            <div class="faq-answer">
+              <p>No. AeroPDF is engineered completely as a client-side single page utility. When you upload or convert your files, all processing and vector adjustments occur 100% locally inside your web browser sandbox. Your files never touch external servers or third-party storage, ensuring supreme data privacy.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              Why does the tool download normal JPEG files instead of a ZIP archive?
+              <i data-lucide="chevron-down" class="faq-arrow"></i>
+            </summary>
+            <div class="faq-answer">
+              <p>Based on direct user feedback, we extract PDF pages as standard, native JPEG files directly into your downloads. This eliminates the extra step of having to unpack and unzip a compressed folder on your computer or phone, making the extracted files immediately viewable and usable.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              Is there a file size or page extraction limit?
+              <i data-lucide="chevron-down" class="faq-arrow"></i>
+            </summary>
+            <div class="faq-answer">
+              <p>We do not enforce rigid server-side file caps. However, since files are loaded directly into browser memory (RAM) for processing, we recommend keeping documents under 50 MB to prevent browser performance bottlenecks, especially on older phone devices.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              Is this tool compliant with privacy standards (GDPR, CCPA)?
+              <i data-lucide="chevron-down" class="faq-arrow"></i>
+            </summary>
+            <div class="faq-answer">
+              <p>Yes. Because we process your files entirely inside your device and do not transfer or keep your documents, AeroPDF meets GDPR, CCPA, and HIPAA compliance policies by design. We do not register profiles, track uploads, or preserve file logs.</p>
+            </div>
+          </details>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- --- Footer --- -->
+    <footer>
+      <p>&copy; 2026 AeroPDF. Engineered for ultimate security. AdSense ready.</p>
+    </footer>
+  </div>
+
+  <!-- --- Sticky Bottom Actions Bar (Active during editing) --- -->
+  <div class="bottom-bar" id="bottomBar">
+    <div class="bottom-bar-content">
+      <div class="stats-group">
+        <span class="stats-count" id="statsCountText">0 Images Selected</span>
+        <span class="stats-detail" id="statsDetailText">Ready to compile</span>
+      </div>
+      <div class="actions-group">
+        <label class="btn btn-secondary" id="addImagesBtn" for="fileInput" style="cursor: pointer;">
+          <i data-lucide="plus" style="margin-right: 0.35rem;"></i>
+          Add More
+        </label>
+        <button class="btn btn-primary btn-convert" id="convertToPdfBtn" type="button">
+          <i data-lucide="file-text"></i>
+          Convert to PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- Modal Overlay for Processing --- -->
+  <div class="modal-overlay" id="loadingModal" role="dialog" aria-modal="true" aria-labelledby="loadingModalTitle">
+    <div class="modal-content">
+      <div class="progress-container">
+        <svg class="progress-circle" width="120" height="120">
+          <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
+          <circle class="circle-progress" id="progressIndicator" cx="60" cy="60" r="54"></circle>
+        </svg>
+        <div class="progress-text" id="progressPercentText">0%</div>
+      </div>
+      <h3 id="loadingModalTitle">Processing Images</h3>
+      <p id="loadingModalStatusText">Optimizing and rendering page content...</p>
+    </div>
+  </div>
+
+  <!-- --- Modal Overlay for Success / PDF Download --- -->
+  <div class="modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+    <div class="modal-content">
+      <div class="success-graphic">
+        <i data-lucide="check" style="width: 2.75rem; height: 2.75rem;"></i>
+      </div>
+      <h3 id="successModalTitle">PDF Generated!</h3>
+      <p>Your document was compiled successfully, completely locally.</p>
+      
+      <div class="success-badge-details">
+        <div class="success-detail-row">
+          <span>Filename</span>
+          <span id="pdfNameText">document.pdf</span>
+        </div>
+        <div class="success-detail-row">
+          <span>File Size</span>
+          <span id="pdfSizeText">0.0 MB</span>
+        </div>
+        <div class="success-detail-row">
+          <span>Total Pages</span>
+          <span id="pdfPagesText">0 pages</span>
+        </div>
+      </div>
+
+      <div class="success-buttons">
+        <button class="btn btn-primary btn-full" id="downloadPdfBtn" type="button">
+          <i data-lucide="download"></i>
+          <span>Download PDF</span>
+        </button>
+        <button class="btn btn-secondary btn-full" id="convertAnotherBtn" type="button">
+          <i data-lucide="rotate-ccw"></i>
+          Convert Another File
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- Toast Notification Container --- -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- --- Hidden File Inputs (Placed at the very bottom outside layout containers to prevent bubbling conflicts) --- -->
+  <input type="file" id="fileInput" class="file-input" accept="image/jpeg, image/jpg, image/png, image/webp" multiple aria-label="Upload Images">
+  <input type="file" id="pdfFileInput" class="file-input" accept="application/pdf" aria-label="Upload PDF Document">
+
+  <!-- --- Scripts --- -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+</html>

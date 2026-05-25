@@ -1,0 +1,19 @@
+{
+  "name": "aeropdf",
+  "version": "1.0.0",
+  "description": "A professional, high-performance, and completely private image-to-PDF converter built with HTML5, CSS3, and vanilla JavaScript.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y serve ."
+  },
+  "keywords": [
+    "pdf",
+    "converter",
+    "image-to-pdf",
+    "jspdf",
+    "client-side",
+    "private"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}
